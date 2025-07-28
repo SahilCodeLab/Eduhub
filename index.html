@@ -8,14 +8,100 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link href="./css/styles.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #f8f9fc;
+            --accent-color: #2e59d9;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .card {
+            border: none;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .navbar {
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+
+        .nav-tabs .nav-link {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .output-container {
+            min-height: 200px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .action-buttons {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        /* Markdown-like styling */
+        .output-content h2 {
+            font-size: 1.5rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .output-content h3 {
+            font-size: 1.25rem;
+            margin-top: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .output-content p {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .output-content ul {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .card-body {
+                padding: 1rem;
+            }
+            .action-buttons {
+                position: static;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <a class="navbar-brand" href="#">
-                <img src="./assets/logo.svg" alt="Logo" height="30" class="d-inline-block align-top me-2">
+                <i class="fas fa-graduation-cap me-2"></i>
                 Academic AI
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -67,14 +153,19 @@
                                 <button id="generateAssignment" class="btn btn-primary">
                                     <i class="fas fa-magic me-1"></i> Generate Assignment
                                 </button>
-                                <div id="assignmentResult" class="mt-4 d-none">
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <h5>Generated Assignment</h5>
-                                        <button id="downloadAssignment" class="btn btn-sm btn-outline-secondary">
-                                            <i class="fas fa-download me-1"></i> PDF
+                                <div id="assignmentResult" class="mt-4 d-none position-relative">
+                                    <div class="action-buttons">
+                                        <button id="copyAssignment" class="btn btn-sm btn-outline-secondary me-2" title="Copy to clipboard">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                        <button id="downloadAssignment" class="btn btn-sm btn-outline-secondary" title="Download PDF">
+                                            <i class="fas fa-file-pdf"></i>
                                         </button>
                                     </div>
-                                    <div class="border p-3 rounded bg-light" id="assignmentOutput"></div>
+                                    <h5 class="mb-3">Generated Assignment</h5>
+                                    <div class="output-container border p-3 rounded bg-light">
+                                        <div class="output-content" id="assignmentOutput"></div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -87,9 +178,16 @@
                                 <button id="generateShort" class="btn btn-primary">
                                     <i class="fas fa-magic me-1"></i> Generate Answer
                                 </button>
-                                <div id="shortResult" class="mt-4 d-none">
-                                    <h5>Answer</h5>
-                                    <div class="border p-3 rounded bg-light" id="shortOutput"></div>
+                                <div id="shortResult" class="mt-4 d-none position-relative">
+                                    <div class="action-buttons">
+                                        <button id="copyShort" class="btn btn-sm btn-outline-secondary" title="Copy to clipboard">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                    <h5 class="mb-3">Answer</h5>
+                                    <div class="output-container border p-3 rounded bg-light">
+                                        <div class="output-content" id="shortOutput"></div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -102,14 +200,19 @@
                                 <button id="generateLong" class="btn btn-primary">
                                     <i class="fas fa-magic me-1"></i> Generate Answer
                                 </button>
-                                <div id="longResult" class="mt-4 d-none">
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <h5>Detailed Answer</h5>
-                                        <button id="downloadLong" class="btn btn-sm btn-outline-secondary">
-                                            <i class="fas fa-download me-1"></i> PDF
+                                <div id="longResult" class="mt-4 d-none position-relative">
+                                    <div class="action-buttons">
+                                        <button id="copyLong" class="btn btn-sm btn-outline-secondary me-2" title="Copy to clipboard">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                        <button id="downloadLong" class="btn btn-sm btn-outline-secondary" title="Download PDF">
+                                            <i class="fas fa-file-pdf"></i>
                                         </button>
                                     </div>
-                                    <div class="border p-3 rounded bg-light" id="longOutput"></div>
+                                    <h5 class="mb-3">Detailed Answer</h5>
+                                    <div class="output-container border p-3 rounded bg-light">
+                                        <div class="output-content" id="longOutput"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -144,12 +247,14 @@
                 </div>
                 <div class="modal-body">
                     <p>This tool helps students generate academic content including assignments, short answers, and detailed explanations.</p>
+                    <p><strong>Backend URL:</strong> https://college-notifier-g7d8.onrender.com</p>
                     <p><strong>Features:</strong></p>
                     <ul>
                         <li>Complete assignment generation with proper structure</li>
                         <li>Concise short answers for quick reference</li>
                         <li>Detailed explanations with examples</li>
                         <li>PDF download with watermark</li>
+                        <li>Copy to clipboard functionality</li>
                     </ul>
                     <div class="alert alert-info mt-3">
                         <i class="fas fa-info-circle me-2"></i> Generated content should be reviewed and customized as needed.
@@ -164,7 +269,251 @@
 
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom TypeScript -->
-    <script type="module" src="./ts/app.ts"></script>
+    
+    <script>
+        // API Configuration
+        const API_BASE_URL = 'https://college-notifier-g7d8.onrender.com';
+
+        // DOM Elements
+        const elements = {
+            generateAssignmentBtn: document.getElementById('generateAssignment'),
+            assignmentTopic: document.getElementById('assignmentTopic'),
+            assignmentOutput: document.getElementById('assignmentOutput'),
+            assignmentResult: document.getElementById('assignmentResult'),
+            downloadAssignmentBtn: document.getElementById('downloadAssignment'),
+            copyAssignmentBtn: document.getElementById('copyAssignment'),
+
+            generateShortBtn: document.getElementById('generateShort'),
+            shortQuestion: document.getElementById('shortQuestion'),
+            shortOutput: document.getElementById('shortOutput'),
+            shortResult: document.getElementById('shortResult'),
+            copyShortBtn: document.getElementById('copyShort'),
+
+            generateLongBtn: document.getElementById('generateLong'),
+            longQuestion: document.getElementById('longQuestion'),
+            longOutput: document.getElementById('longOutput'),
+            longResult: document.getElementById('longResult'),
+            downloadLongBtn: document.getElementById('downloadLong'),
+            copyLongBtn: document.getElementById('copyLong'),
+
+            loadingModal: new bootstrap.Modal(document.getElementById('loadingModal')),
+            loadingText: document.getElementById('loadingText')
+        };
+
+        // Utility Functions
+        function showLoading(message = 'This may take a few moments') {
+            elements.loadingText.textContent = message;
+            elements.loadingModal.show();
+        }
+
+        function hideLoading() {
+            elements.loadingModal.hide();
+        }
+
+        function showError(message) {
+            hideLoading();
+            alert(`Error: ${message}`);
+        }
+
+        function showSuccess(message) {
+            hideLoading();
+            const toast = document.createElement('div');
+            toast.className = 'position-fixed bottom-0 end-0 p-3';
+            toast.innerHTML = `
+                <div class="toast show" role="alert">
+                    <div class="toast-header bg-success text-white">
+                        <strong class="me-auto">Success</strong>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                    </div>
+                    <div class="toast-body">${message}</div>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function markdownToHtml(text) {
+            return text
+                .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+                .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+                .replace(/^\* (.*$)/gm, '<li>$1</li>')
+                .replace(/\n\n/g, '<br><br>')
+                .replace(/\n/g, '<br>');
+        }
+
+        // Copy to Clipboard Function
+        function copyToClipboard(text, successMessage) {
+            navigator.clipboard.writeText(text)
+                .then(() => showSuccess(successMessage))
+                .catch(err => showError('Failed to copy text'));
+        }
+
+        // API Calls
+        async function generateAssignment(topic) {
+            showLoading('Generating your assignment...');
+            try {
+                const response = await fetch(`${API_BASE_URL}/generate-assignment`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: topic }),
+                });
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                const data = await response.json();
+                elements.assignmentOutput.innerHTML = markdownToHtml(data.text);
+                elements.assignmentResult.classList.remove('d-none');
+            } catch (error) {
+                showError(error.message || 'Failed to generate assignment');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function generateShortAnswer(question) {
+            showLoading('Generating short answer...');
+            try {
+                const response = await fetch(`${API_BASE_URL}/generate-short-answer`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: question }),
+                });
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                const data = await response.json();
+                elements.shortOutput.textContent = data.text;
+                elements.shortResult.classList.remove('d-none');
+            } catch (error) {
+                showError(error.message || 'Failed to generate short answer');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function generateLongAnswer(question) {
+            showLoading('Generating detailed answer...');
+            try {
+                const response = await fetch(`${API_BASE_URL}/generate-long-answer`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: question }),
+                });
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                const data = await response.json();
+                elements.longOutput.innerHTML = markdownToHtml(data.text);
+                elements.longResult.classList.remove('d-none');
+            } catch (error) {
+                showError(error.message || 'Failed to generate long answer');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function downloadAsPdf(content, filename) {
+            showLoading('Preparing PDF download...');
+            try {
+                const response = await fetch(`${API_BASE_URL}/download-pdf`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        content: document.querySelector(`#${content.replace('Output', '')} .output-content`).innerHTML,
+                        filename 
+                    }),
+                });
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${filename}.pdf`;
+                a.click();
+                window.URL.revokeObjectURL(url);
+            } catch (error) {
+                showError(error.message || 'Failed to download PDF');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Event Listeners
+        elements.generateAssignmentBtn.addEventListener('click', () => {
+            if (!elements.assignmentTopic.value.trim()) {
+                alert('Please enter an assignment topic');
+                return;
+            }
+            generateAssignment(elements.assignmentTopic.value.trim());
+        });
+
+        elements.downloadAssignmentBtn.addEventListener('click', () => {
+            if (!elements.assignmentOutput.innerHTML.trim()) {
+                alert('No assignment content to download');
+                return;
+            }
+            const filename = `assignment-${elements.assignmentTopic.value.trim().substring(0, 20)}` || 'assignment';
+            downloadAsPdf('assignmentOutput', filename);
+        });
+
+        elements.copyAssignmentBtn.addEventListener('click', () => {
+            if (!elements.assignmentOutput.textContent.trim()) {
+                alert('No content to copy');
+                return;
+            }
+            copyToClipboard(elements.assignmentOutput.textContent, 'Assignment copied to clipboard!');
+        });
+
+        elements.generateShortBtn.addEventListener('click', () => {
+            if (!elements.shortQuestion.value.trim()) {
+                alert('Please enter a question');
+                return;
+            }
+            generateShortAnswer(elements.shortQuestion.value.trim());
+        });
+
+        elements.copyShortBtn.addEventListener('click', () => {
+            if (!elements.shortOutput.textContent.trim()) {
+                alert('No content to copy');
+                return;
+            }
+            copyToClipboard(elements.shortOutput.textContent, 'Short answer copied to clipboard!');
+        });
+
+        elements.generateLongBtn.addEventListener('click', () => {
+            if (!elements.longQuestion.value.trim()) {
+                alert('Please enter a question');
+                return;
+            }
+            generateLongAnswer(elements.longQuestion.value.trim());
+        });
+
+        elements.downloadLongBtn.addEventListener('click', () => {
+            if (!elements.longOutput.innerHTML.trim()) {
+                alert('No content to download');
+                return;
+            }
+            const filename = `answer-${elements.longQuestion.value.trim().substring(0, 20)}` || 'long-answer';
+            downloadAsPdf('longOutput', filename);
+        });
+
+        elements.copyLongBtn.addEventListener('click', () => {
+            if (!elements.longOutput.textContent.trim()) {
+                alert('No content to copy');
+                return;
+            }
+            copyToClipboard(elements.longOutput.textContent, 'Long answer copied to clipboard!');
+        });
+
+        // Initialize tooltips
+        document.addEventListener('DOMContentLoaded', function() {
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
+            tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+                new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
 </body>
 </html>
